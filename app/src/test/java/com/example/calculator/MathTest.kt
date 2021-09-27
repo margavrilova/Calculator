@@ -25,5 +25,10 @@ class MathTest {
     fun dividing_isCorrect() {
         assertEquals(2, 4 / 2)
     }
+
+    @Test
+    fun multiplication_isCorrect() {
+        assertEquals(4, 2 * 2)
+    }
 }
 
