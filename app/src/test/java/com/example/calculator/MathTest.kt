@@ -20,4 +20,10 @@ class MathTest {
         a++
         assertEquals(3, a++)
     }
+
+    @Test
+    fun dividing_isCorrect() {
+        assertEquals(2, 4 / 2)
+    }
 }
+
