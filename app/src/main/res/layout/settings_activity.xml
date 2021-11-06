@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="56dp"
         android:layout_marginTop="16dp"
-        android:text="Настройки"
+        android:text="@string/settings_title"
         android:textColor="@color/black"
         android:textSize="24sp"
         android:gravity="center"

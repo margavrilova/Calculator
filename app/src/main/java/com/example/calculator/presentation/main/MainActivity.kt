@@ -13,6 +13,7 @@ import com.example.calculator.databinding.MainActivityBinding
 import com.example.calculator.di.SettingsDaoProvider
 import com.example.calculator.domain.entity.ResultPanelType
 import com.example.calculator.presentation.common.BaseActivity
+import com.example.calculator.presentation.history.HistoryActivity
 import com.example.calculator.presentation.settings.SettingsActivity
 
 //import com.example.calculator.presentation.settings.SettingsActivity.Companion.SETTINGS_RESULT_REQUEST_CODE
@@ -38,6 +39,10 @@ class MainActivity : BaseActivity() {
 
         viewBinding.mainActivitySettings.setOnClickListener {
             openSettings()
+        }
+
+        viewBinding.mainHistory.setOnClickListener {
+            openHistory()
         }
 
         viewModel.resultPanelState.observe(this) {
@@ -123,4 +128,7 @@ class MainActivity : BaseActivity() {
         startActivity(Intent(this, SettingsActivity::class.java))
     }
 
+    private fun openHistory() {
+        startActivity(Intent(this, HistoryActivity::class.java))
+    }
 }

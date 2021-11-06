@@ -1,6 +1,8 @@
 <resources>
-    <string name="app_name">calculator</string>
+    <string name="app_name">Maroon calculator</string>
     <string name="settings_result_panel_title">Панель результата</string>
+    <string name="settings_title">Настройки</string>
+    <string name="history_title">История операций</string>
 
     <string-array name="result_panel_types">
         <item>Есть. Отображается слева</item>
