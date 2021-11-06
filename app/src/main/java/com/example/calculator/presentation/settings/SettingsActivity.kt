@@ -1,9 +1,11 @@
-package com.example.calculator
+package com.example.calculator.presentation.settings
 
 import android.content.Intent
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.Toast
+import com.example.calculator.R
+import com.example.calculator.presentation.common.BaseActivity
 
 class SettingsActivity : BaseActivity() {
 
