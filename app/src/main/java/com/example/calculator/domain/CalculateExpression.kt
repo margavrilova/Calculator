@@ -12,11 +12,19 @@ fun calculateExpression(expression: String): String {
     if (expression.isBlank()) return ""
 
     var formattedExpression = expression
-    while (formattedExpression.isNotBlank() && !formattedExpression.last()
-            .isDigit() && formattedExpression.last() != ')'
+    while (formattedExpression.isNotBlank() && !formattedExpression.last().isDigit() &&
+        formattedExpression.last() != ')'
     ) {
         formattedExpression = formattedExpression.dropLast(1)
     }
+
+    while (formattedExpression.isNotBlank() && !formattedExpression.first().isDigit() &&
+        formattedExpression.first() != ')' && formattedExpression.first() != '-'
+    ) {
+        formattedExpression = formattedExpression.drop(1)
+    }
+
+    if (formattedExpression.isBlank()) return ""
 
     if (formattedExpression.isBlank()) return ""
 

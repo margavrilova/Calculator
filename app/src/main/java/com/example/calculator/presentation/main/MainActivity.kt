@@ -2,14 +2,17 @@ package com.example.calculator.presentation.main
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
+import android.view.Gravity
 import androidx.activity.viewModels
+import androidx.core.view.isVisible
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.calculator.R
 import com.example.calculator.databinding.MainActivityBinding
 import com.example.calculator.presentation.common.BaseActivity
+import com.example.calculator.presentation.settings.ResultPanelType
 import com.example.calculator.presentation.settings.SettingsActivity
-import com.example.calculator.presentation.settings.SettingsActivity.Companion.SETTINGS_RESULT_REQUEST_CODE
+
+//import com.example.calculator.presentation.settings.SettingsActivity.Companion.SETTINGS_RESULT_REQUEST_CODE
 
 class MainActivity : BaseActivity() {
 
@@ -26,9 +29,6 @@ class MainActivity : BaseActivity() {
 
         viewBinding.mainActivitySettings.setOnClickListener {
             openSettings()
-        }
-        viewBinding.mainEquals.setOnClickListener {
-            viewBinding.mainResult.text = "="
         }
 
         listOf(
@@ -51,6 +51,37 @@ class MainActivity : BaseActivity() {
             }
         }
 
+        mapOf(
+            Operator.PLUS to viewBinding.mainPlus,
+            Operator.MINUS to viewBinding.mainMinus,
+            Operator.MULTIPLY to viewBinding.mainMultiply,
+            Operator.DIVIDE to viewBinding.mainDivide,
+            Operator.POWER to viewBinding.mainPower,
+            Operator.BRACELEFT to viewBinding.mainBraceLeft,
+            Operator.BRACERIGHT to viewBinding.mainBraceRight,
+            Operator.POINT to viewBinding.mainPoint
+        ).forEach { (operator, textView) ->
+            textView?.setOnClickListener {
+                viewModel.onOperatorClicker(operator, viewBinding.mainInput.selectionStart)
+            }
+        }
+
+        viewBinding.mainSqrt?.setOnClickListener {
+            viewModel.onSqrtClicker(viewBinding.mainInput.selectionStart)
+        }
+
+        viewBinding.mainClear.setOnClickListener {
+            viewModel.onClearClicker()
+        }
+
+        viewBinding.mainBack.setOnClickListener {
+            viewModel.onBackClicker(viewBinding.mainInput.selectionStart)
+        }
+
+        viewBinding.mainEquals.setOnClickListener {
+            viewModel.onEqualsClicker(viewBinding.mainInput.selectionStart)
+        }
+
         viewModel.expressionState.observe(this) { state ->
             viewBinding.mainInput.setText(state.expression)
             viewBinding.mainInput.setSelection(state.selection)
@@ -59,19 +90,22 @@ class MainActivity : BaseActivity() {
         viewModel.resultState.observe(this) { state ->
             viewBinding.mainResult.text = state
         }
+
+        viewModel.resultPanelState.observe(this) {
+            with(viewBinding.mainResult) {
+                gravity = when (it) {
+                    ResultPanelType.LEFT -> Gravity.START.or(Gravity.CENTER_VERTICAL)
+                    ResultPanelType.RIGHT -> Gravity.END or (Gravity.CENTER_VERTICAL)
+                    ResultPanelType.HIDE -> gravity
+                }
+                isVisible = it != ResultPanelType.HIDE
+            }
+
+        }
     }
 
     private fun openSettings() {
-        Toast.makeText(this, "Открытие настроек", Toast.LENGTH_LONG).show()
-        val intent = Intent(this, SettingsActivity::class.java)
-        intent.putExtra(SettingsActivity.SETTINGS_RESULT_KEY, 10)
-        startActivityForResult(intent, SETTINGS_RESULT_REQUEST_CODE)
+        startActivity(Intent(this, SettingsActivity::class.java))
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        data?.getStringExtra(SettingsActivity.SETTINGS_RESULT_KEY)?.let {
-            Toast.makeText(this, "result $it", Toast.LENGTH_SHORT).show()
-        }
-    }
 }

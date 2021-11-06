@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.calculator.domain.calculateExpression
+import com.example.calculator.presentation.settings.ResultPanelType
 
 class MainViewModel : ViewModel() {
 
@@ -15,6 +16,9 @@ class MainViewModel : ViewModel() {
 
     private val _resultState = MutableLiveData<String>()
     val resultState: LiveData<String> = _resultState
+
+    private val _resultPanelState = MutableLiveData<ResultPanelType>(ResultPanelType.LEFT)
+    val resultPanelState: LiveData<ResultPanelType> = _resultPanelState
 
     fun onNumberClick(number: Int, selection: Int) {
         expression = putInSelection(expression, number.toString(), selection)
@@ -34,6 +38,25 @@ class MainViewModel : ViewModel() {
         _resultState.value = calculateExpression(expression)
     }
 
+    fun onClearClicker() {
+        expression = ""
+        _expressionState.value = ExpressionState(expression, 0)
+        _resultState.value = ""
+    }
+
+    fun onBackClicker(selection: Int) {
+        if (selection == 0) {
+            return
+        }
+        expression = StringBuilder(expression).deleteAt(selection - 1).toString()
+        _expressionState.value = ExpressionState(expression, selection - 1)
+    }
+
+    fun onEqualsClicker(selection: Int) {
+        _expressionState.value = ExpressionState(expression, selection)
+        _resultState.value = calculateExpression(expression)
+    }
+
     override fun onCleared() {
         super.onCleared()
         Log.d("MainViewModel", "onCleared")
@@ -49,8 +72,8 @@ class MainViewModel : ViewModel() {
 }
 
 enum class Operator(val symbol: String) {
-    MINUS("-"), PLUS("+"), MULTIPLY("*"), DIVIDE("/"),
-    POWER("^"), BRACELEFT("("), BRACERIGHT(")")
+    PLUS("+"), MINUS("-"), MULTIPLY("*"), DIVIDE("/"),
+    POWER("^"), BRACELEFT("("), BRACERIGHT(")"), POINT(".")
 }
 
 class ExpressionState(val expression: String, val selection: Int) {

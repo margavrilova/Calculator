@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">calculator</string>
+    <string name="settings_result_panel_title">Панель результата</string>
+
+    <string-array name="result_panel_types">
+        <item>Есть. Отображается слева</item>
+        <item>Есть. Отображается справа</item>
+        <item>Скрыта</item>
+    </string-array>
 </resources>

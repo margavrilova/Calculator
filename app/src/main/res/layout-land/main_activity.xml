@@ -9,8 +9,8 @@
         android:id="@+id/main_activity_settings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:text="Настройки"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -196,17 +196,20 @@
         android:layout_width="350dp"
         android:layout_height="64dp"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
         android:inputType="number"
         android:textSize="24sp"
         app:layout_constraintBottom_toTopOf="@+id/main_button_container"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/main_activity_settings"
         tools:text="100+40+6" />
 
     <TextView
         android:id="@+id/main_result"
         android:layout_width="300dp"
         android:layout_height="64dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:gravity="end|center_vertical"
@@ -214,6 +217,7 @@
         android:textSize="24sp"
         app:layout_constraintBottom_toTopOf="@+id/main_button_container"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/main_activity_settings"
         tools:text="146" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
