@@ -5,19 +5,28 @@ import android.os.Bundle
 import android.view.Gravity
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.calculator.R
 import com.example.calculator.databinding.MainActivityBinding
+import com.example.calculator.di.SettingsDaoProvider
+import com.example.calculator.domain.entity.ResultPanelType
 import com.example.calculator.presentation.common.BaseActivity
-import com.example.calculator.presentation.settings.ResultPanelType
 import com.example.calculator.presentation.settings.SettingsActivity
 
 //import com.example.calculator.presentation.settings.SettingsActivity.Companion.SETTINGS_RESULT_REQUEST_CODE
 
 class MainActivity : BaseActivity() {
 
-    private val viewModel: MainViewModel by viewModels()
     private val viewBinding by viewBinding(MainActivityBinding::bind)
+    private val viewModel: MainViewModel by viewModels() {
+        object : ViewModelProvider.Factory {
+            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+                return MainViewModel(SettingsDaoProvider.get(this@MainActivity)) as T
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,6 +38,18 @@ class MainActivity : BaseActivity() {
 
         viewBinding.mainActivitySettings.setOnClickListener {
             openSettings()
+        }
+
+        viewModel.resultPanelState.observe(this) {
+            with(viewBinding.mainResult) {
+                gravity = when (it) {
+                    ResultPanelType.LEFT -> Gravity.START.or(Gravity.CENTER_VERTICAL)
+                    ResultPanelType.RIGHT -> Gravity.END or (Gravity.CENTER_VERTICAL)
+                    ResultPanelType.HIDE -> gravity
+                }
+                isVisible = it != ResultPanelType.HIDE
+            }
+
         }
 
         listOf(
@@ -88,20 +109,14 @@ class MainActivity : BaseActivity() {
         }
 
         viewModel.resultState.observe(this) { state ->
-            viewBinding.mainResult.text = state
+            viewBinding.mainResult.text = state.toString()
         }
 
-        viewModel.resultPanelState.observe(this) {
-            with(viewBinding.mainResult) {
-                gravity = when (it) {
-                    ResultPanelType.LEFT -> Gravity.START.or(Gravity.CENTER_VERTICAL)
-                    ResultPanelType.RIGHT -> Gravity.END or (Gravity.CENTER_VERTICAL)
-                    ResultPanelType.HIDE -> gravity
-                }
-                isVisible = it != ResultPanelType.HIDE
-            }
+    }
 
-        }
+    override fun onStart() {
+        super.onStart()
+        viewModel.onStart()
     }
 
     private fun openSettings() {

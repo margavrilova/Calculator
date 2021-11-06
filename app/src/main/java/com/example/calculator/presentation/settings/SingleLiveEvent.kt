@@ -1,4 +1,4 @@
-package com.example.calculator.presentation.common
+package com.example.calculator.presentation.settings
 
 import android.util.Log
 import androidx.annotation.MainThread

@@ -6,11 +6,11 @@ import androidx.appcompat.app.AppCompatActivity
 
 abstract class BaseActivity : AppCompatActivity() {
 
-    private val tag: String = this.javaClass.simpleName
+    private val tag = this.javaClass.simpleName
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d(tag, "onCreate $savedInstanceState")
+        Log.d(tag, "onCreate")
     }
 
     override fun onStart() {

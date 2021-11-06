@@ -4,10 +4,15 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.calculator.domain.SettingsDao
 import com.example.calculator.domain.calculateExpression
-import com.example.calculator.presentation.settings.ResultPanelType
+import com.example.calculator.domain.entity.ResultPanelType
+import kotlinx.coroutines.launch
 
-class MainViewModel : ViewModel() {
+class MainViewModel(
+    private val settingsDao: SettingsDao
+) : ViewModel() {
 
     private var expression: String = ""
 
@@ -17,8 +22,14 @@ class MainViewModel : ViewModel() {
     private val _resultState = MutableLiveData<String>()
     val resultState: LiveData<String> = _resultState
 
-    private val _resultPanelState = MutableLiveData<ResultPanelType>(ResultPanelType.LEFT)
+    private val _resultPanelState = MutableLiveData<ResultPanelType>(ResultPanelType.RIGHT)
     val resultPanelState: LiveData<ResultPanelType> = _resultPanelState
+
+    init {
+        viewModelScope.launch {
+            _resultPanelState.value = settingsDao.getResultPanelType()
+        }
+    }
 
     fun onNumberClick(number: Int, selection: Int) {
         expression = putInSelection(expression, number.toString(), selection)
@@ -69,13 +80,9 @@ class MainViewModel : ViewModel() {
         )
     }
 
-}
-
-enum class Operator(val symbol: String) {
-    PLUS("+"), MINUS("-"), MULTIPLY("*"), DIVIDE("/"),
-    POWER("^"), BRACELEFT("("), BRACERIGHT(")"), POINT(".")
-}
-
-class ExpressionState(val expression: String, val selection: Int) {
-
+    fun onStart() {
+        viewModelScope.launch {
+            _resultPanelState.value = settingsDao.getResultPanelType()
+        }
+    }
 }
