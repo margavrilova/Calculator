@@ -5,6 +5,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.calculator.databinding.HistoryItemBinding
 import com.example.calculator.domain.entity.HistoryItem
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.*
 
 class HistoryAdapter(
     private val onItemClicked: (HistoryItem) -> Unit
@@ -32,6 +35,7 @@ class HistoryAdapter(
         with(holder.bindings) {
             expression.text = item.expression
             result.text = item.result
+            createdAt.text = item.createdAt.formatForHistory()
             root.setOnClickListener {
                 onItemClicked(item)
             }
@@ -42,5 +46,8 @@ class HistoryAdapter(
 
     class HistoryViewHolder(val bindings: HistoryItemBinding) :
         RecyclerView.ViewHolder(bindings.root)
+}
 
+fun LocalDateTime.formatForHistory(): String {
+    return format(DateTimeFormatter.ofPattern("hh:mm:ss dd MMMM yyyy года", Locale("ru")))
 }

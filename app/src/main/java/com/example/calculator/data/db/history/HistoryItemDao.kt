@@ -1,11 +1,10 @@
 package com.example.calculator.data.db.history
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
+import androidx.room.*
+import com.example.calculator.data.db.typeConverters.LocalDateTimeCoverter
 
 @Dao
+@TypeConverters(LocalDateTimeCoverter::class)
 interface HistoryItemDao {
 
     @Insert
