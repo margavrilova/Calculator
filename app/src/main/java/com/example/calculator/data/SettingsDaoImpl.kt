@@ -6,7 +6,7 @@ import com.example.calculator.domain.entity.ResultPanelType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class SettingsDaoImplementation(
+class SettingsDaoImpl(
     private val preferences: SharedPreferences
 ) : SettingsDao {
 

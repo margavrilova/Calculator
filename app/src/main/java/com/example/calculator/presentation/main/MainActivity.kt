@@ -3,6 +3,7 @@ package com.example.calculator.presentation.main
 import android.content.Intent
 import android.os.Bundle
 import android.view.Gravity
+import androidx.activity.result.launch
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModel
@@ -10,10 +11,11 @@ import androidx.lifecycle.ViewModelProvider
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.calculator.R
 import com.example.calculator.databinding.MainActivityBinding
+import com.example.calculator.di.HistoryRepositoryProvider
 import com.example.calculator.di.SettingsDaoProvider
 import com.example.calculator.domain.entity.ResultPanelType
 import com.example.calculator.presentation.common.BaseActivity
-import com.example.calculator.presentation.history.HistoryActivity
+import com.example.calculator.presentation.history.HistoryResult
 import com.example.calculator.presentation.settings.SettingsActivity
 
 //import com.example.calculator.presentation.settings.SettingsActivity.Companion.SETTINGS_RESULT_REQUEST_CODE
@@ -21,12 +23,19 @@ import com.example.calculator.presentation.settings.SettingsActivity
 class MainActivity : BaseActivity() {
 
     private val viewBinding by viewBinding(MainActivityBinding::bind)
-    private val viewModel: MainViewModel by viewModels() {
+    private val viewModel by viewModels<MainViewModel> {
         object : ViewModelProvider.Factory {
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                return MainViewModel(SettingsDaoProvider.get(this@MainActivity)) as T
+                return MainViewModel(
+                    SettingsDaoProvider.get(this@MainActivity), //TODO КАКАЯ-ТО ЛАЖА 13) 51:15 (getDao)
+                    HistoryRepositoryProvider.get(this@MainActivity)
+                ) as T
             }
         }
+    }
+
+    private val resultLauncher = registerForActivityResult(HistoryResult()) { item ->
+        viewModel.onHistoryResult(item)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -129,6 +138,6 @@ class MainActivity : BaseActivity() {
     }
 
     private fun openHistory() {
-        startActivity(Intent(this, HistoryActivity::class.java))
+        resultLauncher.launch()
     }
 }

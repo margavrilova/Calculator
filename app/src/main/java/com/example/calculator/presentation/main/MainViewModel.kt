@@ -7,11 +7,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.calculator.domain.SettingsDao
 import com.example.calculator.domain.calculateExpression
+import com.example.calculator.domain.entity.HistoryItem
+import com.example.calculator.domain.entity.HistoryRepository
 import com.example.calculator.domain.entity.ResultPanelType
 import kotlinx.coroutines.launch
 
 class MainViewModel(
-    private val settingsDao: SettingsDao
+    private val settingsDao: SettingsDao,
+    private val historyRepository: HistoryRepository
 ) : ViewModel() {
 
     private var expression: String = ""
@@ -64,8 +67,13 @@ class MainViewModel(
     }
 
     fun onEqualsClicker(selection: Int) {
-        _expressionState.value = ExpressionState(expression, selection)
-        _resultState.value = calculateExpression(expression)
+        val result = calculateExpression(expression)
+        viewModelScope.launch {
+            historyRepository.add(HistoryItem(expression, result))
+        }
+        _resultState.value = result
+        _expressionState.value = ExpressionState(result, result.length)
+        expression = result
     }
 
     override fun onCleared() {
@@ -83,6 +91,14 @@ class MainViewModel(
     fun onStart() {
         viewModelScope.launch {
             _resultPanelState.value = settingsDao.getResultPanelType()
+        }
+    }
+
+    fun onHistoryResult(item: HistoryItem?) {
+        if (item != null) {
+            expression = item.expression
+            _expressionState.value = ExpressionState(expression, expression.length)
+            _resultState.value = item.result
         }
     }
 }
