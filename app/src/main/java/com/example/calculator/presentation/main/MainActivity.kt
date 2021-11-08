@@ -1,7 +1,10 @@
 package com.example.calculator.presentation.main
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.view.Gravity
 import androidx.activity.result.launch
 import androidx.activity.viewModels
@@ -83,6 +86,7 @@ class MainActivity : BaseActivity() {
                     index,
                     viewBinding.mainInput.selectionStart
                 )
+                vibrate()
             }
         }
 
@@ -96,36 +100,43 @@ class MainActivity : BaseActivity() {
         ).forEach { (operator, textView) ->
             textView?.setOnClickListener {
                 viewModel.onOperatorClicker(operator, viewBinding.mainInput.selectionStart)
+                vibrate()
             }
         }
 
         viewBinding.mainSqrt?.setOnClickListener {
             viewModel.onSqrtClicker(viewBinding.mainInput.selectionStart)
+            vibrate()
         }
 
         viewBinding.mainBraceLeft?.setOnClickListener {
             viewModel.onBraceLeftClicker(viewBinding.mainInput.selectionStart)
+            vibrate()
         }
 
         viewBinding.mainBraceRight?.setOnClickListener {
             viewModel.onBraceRightClicker(viewBinding.mainInput.selectionStart)
+            vibrate()
         }
-
 
         viewBinding.mainClear.setOnClickListener {
             viewModel.onClearClicker()
+            vibrate()
         }
 
         viewBinding.mainBack.setOnClickListener {
             viewModel.onBackClicker(viewBinding.mainInput.selectionStart)
+            vibrate()
         }
 
         viewBinding.mainEquals.setOnClickListener {
             viewModel.onEqualsClicker()
+            vibrate()
         }
 
         viewBinding.mainMemory.setOnClickListener {
             viewModel.onMemoryClicker()
+            vibrate()
         }
 
         viewModel.expressionState.observe(this) { state ->
@@ -150,5 +161,16 @@ class MainActivity : BaseActivity() {
 
     private fun openHistory() {
         resultLauncher.launch()
+    }
+
+    private fun vibrate() {
+        if (viewModel.vibrationTime.value ?: 0 > 0) {
+            val vibe = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            vibe.vibrate(
+                VibrationEffect.createOneShot(
+                    (viewModel.vibrationTime.value ?: 1).toLong(), 1
+                )
+            )
+        }
     }
 }

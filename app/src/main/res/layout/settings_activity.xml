@@ -100,7 +100,6 @@
 
         <SeekBar
             android:id="@+id/seekBarPrecision"
-            style="@style/Widget.AppCompat.SeekBar.Discrete"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
@@ -158,8 +157,8 @@
             android:layout_marginEnd="4dp"
             android:layout_marginTop="8dp"
             android:min="0"
-            android:max="10"
-            tools:progress="5"
+            android:max="400"
+            tools:progress="300"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/title" />
@@ -172,7 +171,7 @@
             android:layout_marginEnd="16dp"
             android:layout_marginTop="8dp"
             android:layout_gravity="center_horizontal"
-            tools:text="5 из 10" />
+            tools:text="300" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

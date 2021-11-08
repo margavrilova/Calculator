@@ -12,11 +12,8 @@ interface SettingsDao {
     suspend fun setPrecision(precisionNumber: Int)
     suspend fun getPrecision(): Int
 
+    /** Длительность виброотклика */
     suspend fun setVibration(vibration: Int)
     suspend fun getVibration(): Int?
 
-
-    /** Сила вибрации */
-    //suspend fun setVibrationType(vibrationType: VibrationType) TODO
-    //suspend fun getVibrationType(): VibrationType TODO
 }

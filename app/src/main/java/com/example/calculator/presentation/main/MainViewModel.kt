@@ -28,11 +28,15 @@ class MainViewModel(
     private val _resultPanelState = MutableLiveData<ResultPanelType>(ResultPanelType.RIGHT)
     val resultPanelState: LiveData<ResultPanelType> = _resultPanelState
 
+    private var _vibrationTime = MutableLiveData<Int>()
+    val vibrationTime = _vibrationTime
+
     private var _precision: Int = 3
 
     init {
         viewModelScope.launch {
             _resultPanelState.value = settingsDao.getResultPanelType()
+            _vibrationTime.value = settingsDao.getVibration()
         }
     }
 
@@ -113,6 +117,7 @@ class MainViewModel(
         viewModelScope.launch {
             _resultPanelState.value = settingsDao.getResultPanelType()
             _precision = settingsDao.getPrecision()
+            _vibrationTime.value = settingsDao.getVibration()
         }
     }
 
