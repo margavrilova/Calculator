@@ -27,7 +27,7 @@ class MainActivity : BaseActivity() {
         object : ViewModelProvider.Factory {
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
                 return MainViewModel(
-                    SettingsDaoProvider.get(this@MainActivity), //TODO КАКАЯ-ТО ЛАЖА 13) 51:15 (getDao)
+                    SettingsDaoProvider.get(this@MainActivity),
                     HistoryRepositoryProvider.get(this@MainActivity)
                 ) as T
             }
@@ -92,8 +92,6 @@ class MainActivity : BaseActivity() {
             Operator.MULTIPLY to viewBinding.mainMultiply,
             Operator.DIVIDE to viewBinding.mainDivide,
             Operator.POWER to viewBinding.mainPower,
-            Operator.BRACELEFT to viewBinding.mainBraceLeft,
-            Operator.BRACERIGHT to viewBinding.mainBraceRight,
             Operator.POINT to viewBinding.mainPoint
         ).forEach { (operator, textView) ->
             textView?.setOnClickListener {
@@ -105,6 +103,15 @@ class MainActivity : BaseActivity() {
             viewModel.onSqrtClicker(viewBinding.mainInput.selectionStart)
         }
 
+        viewBinding.mainBraceLeft?.setOnClickListener {
+            viewModel.onBraceLeftClicker(viewBinding.mainInput.selectionStart)
+        }
+
+        viewBinding.mainBraceRight?.setOnClickListener {
+            viewModel.onBraceRightClicker(viewBinding.mainInput.selectionStart)
+        }
+
+
         viewBinding.mainClear.setOnClickListener {
             viewModel.onClearClicker()
         }
@@ -114,7 +121,11 @@ class MainActivity : BaseActivity() {
         }
 
         viewBinding.mainEquals.setOnClickListener {
-            viewModel.onEqualsClicker(viewBinding.mainInput.selectionStart)
+            viewModel.onEqualsClicker()
+        }
+
+        viewBinding.mainMemory.setOnClickListener {
+            viewModel.onMemoryClicker()
         }
 
         viewModel.expressionState.observe(this) { state ->

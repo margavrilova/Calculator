@@ -2,6 +2,7 @@ package com.example.calculator.presentation.settings
 
 import android.app.AlertDialog
 import android.os.Bundle
+import android.widget.SeekBar
 import androidx.activity.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -32,6 +33,34 @@ class SettingsActivity : BaseActivity() {
         viewBinding.resultPanelContainer.setOnClickListener {
             viewModel.onResultPanelTypeClicked()
         }
+
+        viewBinding.seekBarPrecision.setOnSeekBarChangeListener(object :
+            SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
+                viewBinding.precisionText.text =
+                    "Знаков после запятой: " + seekBar.progress.toString()
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar) {}
+
+            override fun onStopTrackingTouch(seekBar: SeekBar) {
+                viewModel.onPrecisionChanged(seekBar.progress)
+            }
+        })
+
+        viewBinding.seekBarVibration.setOnSeekBarChangeListener(object :
+            SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
+                viewBinding.vibrationText.text = seekBar.progress.toString()
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar) {}
+
+            override fun onStopTrackingTouch(seekBar: SeekBar) {
+                viewModel.onVibrationChanged(seekBar.progress)
+            }
+        })
+
         viewModel.resultPanelState.observe(this) { state ->
             viewBinding.resultPanelDescription.text =
                 resources.getStringArray(R.array.result_panel_types)[state.ordinal]
@@ -39,7 +68,16 @@ class SettingsActivity : BaseActivity() {
         viewModel.openResultPanelAction.observe(this) { type ->
             showDialog(type)
         }
+
+        viewModel.precisionResult.observe(this) {
+            viewBinding.seekBarPrecision.progress = it
+        }
+
+        viewModel.vibrationTime.observe(this) {
+            viewBinding.seekBarVibration.progress = it
+        }
     }
+
 
     private fun showDialog(type: ResultPanelType) {
         var result: Int? = null

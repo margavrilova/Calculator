@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.calculator.domain.entity.HistoryItem
 import com.example.calculator.domain.entity.HistoryRepository
-import com.example.calculator.presentation.settings.SingleLiveEvent
+import com.example.calculator.presentation.common.SingleLiveEvent
 import kotlinx.coroutines.launch
 
 class HistoryViewModel(

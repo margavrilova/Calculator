@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.calculator.domain.SettingsDao
 import com.example.calculator.domain.entity.ResultPanelType
+import com.example.calculator.presentation.common.SingleLiveEvent
 import kotlinx.coroutines.launch
 
 class SettingsViewModel(
@@ -18,9 +19,17 @@ class SettingsViewModel(
     private val _openResultPanelAction = SingleLiveEvent<ResultPanelType>()
     val openResultPanelAction: LiveData<ResultPanelType> = _openResultPanelAction
 
+    private val _precisionResult = MutableLiveData<Int>()
+    val precisionResult = _precisionResult
+
+    private val _vibrationTime = MutableLiveData<Int>()
+    val vibrationTime = _vibrationTime
+
     init {
         viewModelScope.launch {
             _resultPanelState.value = settingsDao.getResultPanelType()
+            _precisionResult.value = settingsDao.getPrecision()
+            _vibrationTime.value = settingsDao.getVibration()
         }
     }
 
@@ -33,6 +42,20 @@ class SettingsViewModel(
 
     fun onResultPanelTypeClicked() {
         _openResultPanelAction.value = resultPanelState.value
+    }
+
+    fun onPrecisionChanged(precision: Int) {
+        _precisionResult.value = precision
+        viewModelScope.launch {
+            settingsDao.setPrecision(precision)
+        }
+    }
+
+    fun onVibrationChanged(vibration: Int) {
+        _vibrationTime.value = vibration
+        viewModelScope.launch {
+            settingsDao.setVibration(vibration)
+        }
     }
 
 }

@@ -28,6 +28,8 @@ class MainViewModel(
     private val _resultPanelState = MutableLiveData<ResultPanelType>(ResultPanelType.RIGHT)
     val resultPanelState: LiveData<ResultPanelType> = _resultPanelState
 
+    private var _precision: Int = 3
+
     init {
         viewModelScope.launch {
             _resultPanelState.value = settingsDao.getResultPanelType()
@@ -37,19 +39,31 @@ class MainViewModel(
     fun onNumberClick(number: Int, selection: Int) {
         expression = putInSelection(expression, number.toString(), selection)
         _expressionState.value = ExpressionState(expression, selection + 1)
-        _resultState.value = calculateExpression(expression)
+        _resultState.value = calculateExpression(expression, _precision)
     }
 
     fun onOperatorClicker(operator: Operator, selection: Int) {
         expression = putInSelection(expression, operator.symbol, selection)
         _expressionState.value = ExpressionState(expression, selection + 1)
-        _resultState.value = calculateExpression(expression)
+        _resultState.value = calculateExpression(expression, _precision)
     }
 
     fun onSqrtClicker(selection: Int) {
         expression = putInSelection(expression, "^(1/2)", selection)
         _expressionState.value = ExpressionState(expression, selection + 5)
-        _resultState.value = calculateExpression(expression)
+        _resultState.value = calculateExpression(expression, _precision)
+    }
+
+    fun onBraceLeftClicker(selection: Int) {
+        expression = putInSelection(expression, "()", selection)
+        _expressionState.value = ExpressionState(expression, selection + 1)
+        _resultState.value = calculateExpression(expression, _precision)
+    }
+
+    fun onBraceRightClicker(selection: Int) {
+        expression = putInSelection(expression, ")", selection)
+        _expressionState.value = ExpressionState(expression, selection + 1)
+        _resultState.value = calculateExpression(expression, _precision)
     }
 
     fun onClearClicker() {
@@ -66,14 +80,21 @@ class MainViewModel(
         _expressionState.value = ExpressionState(expression, selection - 1)
     }
 
-    fun onEqualsClicker(selection: Int) {
-        val result = calculateExpression(expression)
+    fun onEqualsClicker() {
+        val result = calculateExpression(expression, _precision)
         viewModelScope.launch {
             historyRepository.add(HistoryItem(expression, result))
         }
         _resultState.value = result
         _expressionState.value = ExpressionState(result, result.length)
         expression = result
+    }
+
+    fun onMemoryClicker() {
+        val result = calculateExpression(expression, _precision)
+        viewModelScope.launch {
+            historyRepository.add(HistoryItem(expression, result))
+        }
     }
 
     override fun onCleared() {
@@ -91,6 +112,7 @@ class MainViewModel(
     fun onStart() {
         viewModelScope.launch {
             _resultPanelState.value = settingsDao.getResultPanelType()
+            _precision = settingsDao.getPrecision()
         }
     }
 

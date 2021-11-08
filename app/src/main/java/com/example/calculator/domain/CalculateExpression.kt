@@ -7,7 +7,7 @@ import kotlin.math.floor
  * Рассчитывает значение выражения [expression]
  */
 
-fun calculateExpression(expression: String): String {
+fun calculateExpression(expression: String, precision: Int): String {
 
     if (expression.isBlank()) return ""
 
@@ -26,13 +26,21 @@ fun calculateExpression(expression: String): String {
 
     if (formattedExpression.isBlank()) return ""
 
-    if (formattedExpression.isBlank()) return ""
+    val result = try {
+        DoubleEvaluator().evaluate(formattedExpression)
+    } catch (e: IllegalArgumentException) {
+        null
+    }
 
-    val result = DoubleEvaluator().evaluate(formattedExpression)
-
-    return if (floor(result) == result) {
-        result.toInt().toString()
-    } else {
-        result.toString()
+    return when (result) {
+        null -> {
+            "Что-то не так"
+        }
+        floor(result) -> {
+            result.toInt().toString()
+        }
+        else -> {
+            "%.${precision}f".format(result) //TODO
+        }
     }
 }

@@ -20,8 +20,26 @@ class SettingsDaoImpl(
             ?.let { ResultPanelType.valueOf(it) } ?: ResultPanelType.RIGHT
     }
 
-    companion object {
-        private const val RESULT_PANEL_TYPE_KEY = "RESULT_PANEL_TYPE_KEY"
+    override suspend fun getPrecision(): Int {
+        return preferences.getInt(PRECISION_NUMBER_KEY, 3)
     }
 
+    override suspend fun setPrecision(precisionNumber: Int) {
+        preferences.edit().putInt(PRECISION_NUMBER_KEY, precisionNumber).apply()
+    }
+
+    override suspend fun getVibration(): Int {
+        return preferences.getInt(VIBRATION_KEY, 0)
+    }
+
+    override suspend fun setVibration(vibration: Int) {
+        preferences.edit().putInt(VIBRATION_KEY, vibration).apply()
+    }
+
+
+    companion object {
+        private const val RESULT_PANEL_TYPE_KEY = "RESULT_PANEL_TYPE_KEY"
+        private const val PRECISION_NUMBER_KEY = "PRECISION_NUMBER_KEY"
+        private const val VIBRATION_KEY = "VIBRATION_KEY"
+    }
 }
