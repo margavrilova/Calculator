@@ -37,7 +37,7 @@ fun calculateExpression(expression: String, precision: Int): String {
             "Что-то не так"
         }
         floor(result) -> {
-            result.toInt().toString()
+            result.toLong().toString()
         }
         else -> {
             "%.${precision}f".format(result) //TODO
